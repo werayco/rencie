@@ -1,3 +1,4 @@
-.env
+all.env
 RAG/.env
 appointment/.env
+*.env

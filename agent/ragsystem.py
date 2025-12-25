@@ -1,15 +1,14 @@
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import warnings
 import os
 
-vectordbpath = os.path.join(os.getcwd(), "RAG", "faiss_db")
+vectordbpath = os.path.join(os.getcwd(), "faissDB")
 warnings.filterwarnings("ignore")
 
-
-def vectorstorecreator(filepath, db_path="faiss_db"):
+def vectorstorecreator(filepath, db_path="faissDB"):
     docs = PyPDFLoader(filepath).load()
     textsplitter = RecursiveCharacterTextSplitter(
         chunk_size=200, separators=["\n\n", "\n", " ", ""]
@@ -23,7 +22,13 @@ def vectorstorecreator(filepath, db_path="faiss_db"):
     faiss_vector_database.save_local(db_path)
 
 
-def load_faiss_vector_store(query, db_directory_path=vectordbpath):
+from langchain.tools import tool
+
+
+@tool
+def vectordbMemory(query):
+    "this vector database tool should be used when the query of the user is about renci"
+    db_directory_path = vectordbpath
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         model_kwargs={"device": "cpu"},
@@ -33,11 +38,5 @@ def load_faiss_vector_store(query, db_directory_path=vectordbpath):
     )
     retriever = vector_store.as_retriever()
     response = retriever.get_relevant_documents(query)
-    print(f"RAG Observation (Documents Found): {response}")  
     context = "\n\n".join([doc.page_content for doc in response])
     return context
-
-
-# vectorstorecreator(r"./sample.pdf") # uncomment this create the vector store
-
-# print(load_faiss_vector_store("ray and ryan?"))

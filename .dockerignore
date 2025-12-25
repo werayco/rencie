@@ -1,1 +1,3 @@
 app.docker-compose.yml
+all.env
+setups/

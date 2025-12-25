@@ -2,13 +2,20 @@ evidently
 nltk
 pandas
 langchain-ollama
-ollama
-uvicorn
-fastapi
+langchain
+langchain-community
 huggingface-hub
 sentence-transformers
-pymongo
-python-dotenv
 faiss-cpu
 langchain-google-genai
 black
+web3
+langgraph
+langgraph-checkpoint-mongodb
+fastapi
+uvicorn
+bcrypt
+PyJWT == 2.10.1
+resend
+celery
+bcrypt

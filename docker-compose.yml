@@ -1,0 +1,39 @@
+services:
+  renciapi:
+    container_name: renci
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/renci:latest
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - chatai
+    env_file:
+      - ./all.env
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - chatai
+
+  worker: 
+    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/renci:latest
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    container_name: celery
+    command: celery -A renci.config.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    networks:
+      - chatai
+
+networks:
+  chatai:
+    external: true
+

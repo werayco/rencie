@@ -30,11 +30,37 @@ jobs:
 
       - name: build images and push to ECR
         run: |
-          docker build -t orderservice:latest -f order/order.dockerfile ./order
-          docker tag orderservice:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/order:latest
-          docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/order:latest
+          docker build -t renci:latest -f renci/renci.dockerfile ./order
+          docker tag orderservice:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/renci:latest
+          docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/renci:latest
 
           docker build -t talktoai:latest -f agent/agent.dockerfile .
           docker tag talktoai:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
           docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
+          
+      - name: scp docker-compose config to bastion
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.BASTION_HOST }}
+          username: ${{ secrets.BASTION_USERNAME }}
+          key: ${{ secrets.BASTION_SSH_KEY }}
+          port: ${{ secrets.BASTION_PORT }}
+          source: "docker-compose.yml"
+          target: "~/"
+          overwrite: true
 
+      - name: scp docker-compose config from bastion to renci server, then deploy using docker.
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.BASTION_HOST }}
+          username: ${{ secrets.BASTION_USERNAME }}
+          key: ${{ secrets.BASTION_SSH_KEY }}
+          port: ${{ secrets.BASTION_PORT }}
+          script: |
+            scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app/requirements.txt
+            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/airflow.pem ubuntu@${{ secrets.EC2_HOST }} "\
+              cd /home/ubuntu/app && \
+              docker compose down \
+              docker compose up -d \
+            "
+            echo "Deployment complete"
