@@ -1,0 +1,49 @@
+services:
+  traefik:
+    image: "traefik"
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8081:8080"
+    environment:
+      - CF_API_EMAIL=${API_EMAIL}
+      - CF_DNS_API_TOKEN=${API_TOKEN}
+
+    command:
+      - --global.checkNewVersion=false
+      - --global.sendAnonymousUsage=false
+
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+
+      - --log.level=DEBUG
+      - --api.dashboard=true
+      - --api.insecure=true
+
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=chatai
+
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+
+      - --certificatesresolvers.myresolverv1.acme.email=werayco@gmail.com
+      - --certificatesresolvers.myresolverv1.acme.storage=/var/traefik/certs/cloudflare-acme.json
+      - --certificatesresolvers.myresolverv1.acme.dnschallenge=true
+      - --certificatesresolvers.myresolverv1.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.myresolverv1.acme.dnschallenge.delaybeforecheck=0
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/certs/:/var/traefik/certs/:rw
+
+    networks:
+      - chatai
+
+volumes:
+  traefik-certificates:
+
+networks:
+  app_chatai:
+    external: true

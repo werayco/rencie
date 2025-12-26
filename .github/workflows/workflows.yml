@@ -30,7 +30,6 @@ jobs:
 
       - name: build images and push to ECR
         run: |
-
       
           docker build -t talktoai:latest -f agent.dockerfile .
           docker tag talktoai:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest

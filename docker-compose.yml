@@ -62,6 +62,24 @@ services:
       - traefik.http.routers.grafana.rule=Host(`grafana.devrayco.name.ng`)
       - traefik.http.routers.grafana.entrypoints=websecure
       - traefik.http.routers.grafana.tls.certresolver=thenonsensedev
+  
+    portainer:
+      image: portainer/portainer-ce:latest
+      container_name: portainer
+      restart: unless-stopped
+      ports:
+        - "9000:9000"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - portainer_data:/data
+      networks:
+        - app_chatai
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.portainer.rule=Host(`portainer.devrayco.name.ng`)"
+        - "traefik.http.routers.portainer.entrypoints=websecure"
+        - "traefik.http.routers.portainer.tls.certresolver=myresolverv1"
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 networks:
   chatai:
