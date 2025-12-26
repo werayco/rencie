@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 import re
@@ -14,7 +14,18 @@ from renci.config import *
 from prometheus_client import *
 
 app = FastAPI(title="Renci AI Agent Server", version="1.0.0")
+HTTP_REQUEST_LATENCY = Histogram(
+    "http_request_duration_seconds",
+    "HTTP request latency",
+    buckets=[0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5]
+)
 
+@app.get("/metrics")
+def metrics():
+    return Response(
+        generate_latest(),
+        media_type=CONTENT_TYPE_LATEST
+    )
 
 @app.get("/")
 async def health_check():
