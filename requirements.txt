@@ -4,11 +4,11 @@ pandas
 langchain-ollama
 langchain
 langchain-community
+langchain-text-splitters
 huggingface-hub
 sentence-transformers
 faiss-cpu
 langchain-google-genai
-black
 web3
 langgraph
 langgraph-checkpoint-mongodb
@@ -18,4 +18,7 @@ bcrypt
 PyJWT == 2.10.1
 resend
 celery
+redis
 bcrypt
+langchain-groq
+python-multipart

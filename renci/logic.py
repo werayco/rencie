@@ -13,7 +13,9 @@ import jwt
 from typing import Literal
 from renci.config import *
 
-load_dotenv(dotenv_path=r".\all.env")
+# load_dotenv(dotenv_path=r".\all.env")
+# load_dotenv()
+
 JWT_SECRET = str(os.getenv("JWT_SECRET"))
 MONGO = os.getenv("MONGODB")
 

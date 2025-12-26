@@ -137,8 +137,9 @@ async def createAccount(req: createPayload):
         password: str = requestPayload.get("password")
         phoneNumber: int = requestPayload.get("phoneNumber")
         emailAddress: str = requestPayload.get("emailAddress")
+        ethAddress : str = requestPayload.get("ethAddress")
         task = bank.createUser.delay(
-            firstName, lastName, dob, password, phoneNumber, emailAddress
+            firstName, lastName, dob, password, phoneNumber, emailAddress, ethAddress
         )
 
         return JSONResponse(

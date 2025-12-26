@@ -13,9 +13,11 @@ from renci.logic import *
 from agent.tools import *
 from agent.ragsystem import vectordbMemory
 
-load_dotenv("./all.env")
+# load_dotenv(dotenv_path=r".\all.env")
+# load_dotenv()
+MONGO = os.getenv("MONGODB")
 
-client = MongoClient()
+client = MongoClient(MONGO)
 checkpointer = MongoDBSaver(client, db_name="my_database")
 
 

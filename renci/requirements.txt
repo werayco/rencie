@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pymongo
-python-dotenv
-bcrypt
-PyJWT == 2.10.1
-resend
-celery
-bcrypt
