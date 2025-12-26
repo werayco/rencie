@@ -11,8 +11,10 @@ from agent.process import *
 from agent.ragsystem import *
 from renci.logic import *
 from renci.config import *
+from prometheus_client import *
 
 app = FastAPI(title="Renci AI Agent Server", version="1.0.0")
+promI
 
 @app.get("/")
 async def health_check():

@@ -56,10 +56,10 @@ jobs:
           key: ${{ secrets.BASTION_SSH_KEY }}
           port: ${{ secrets.BASTION_PORT }}
           script: |
-            scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app/requirements.txt
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/airflow.pem ubuntu@${{ secrets.EC2_HOST }} "\
-              cd /home/ubuntu/app && \
+            scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.RENCI_HOST }}:/home/ubuntu/renci/
+            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
+              cd /home/ubuntu/renci && \
               docker compose down \
               docker compose up -d \
             "
-            echo "Deployment complete"
+            echo "deployment complete"
