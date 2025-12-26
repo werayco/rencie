@@ -28,13 +28,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+        
       - name: build images and push to ECR
         run: |
-      
+        
           docker build -t talktoai:latest -f agent.dockerfile .
           docker tag talktoai:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
           docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
           
+        
       - name: scp docker-compose config to bastion
         uses: appleboy/scp-action@v0.1.7
         with:
