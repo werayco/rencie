@@ -59,7 +59,6 @@ jobs:
             scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.RENCI_HOST }}:/home/ubuntu/renci/
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
               cd /home/ubuntu/renci && \
-              docker compose down \
+              docker compose down && \
               docker compose up -d \
             "
-            echo "deployment complete"
