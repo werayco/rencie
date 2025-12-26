@@ -45,5 +45,5 @@ volumes:
   traefik-certificates:
 
 networks:
-  app_chatai:
+  chatai:
     external: true
