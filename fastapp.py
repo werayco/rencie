@@ -227,7 +227,7 @@ async def transfer(req: transferPayload):
         token: str = bank.decodeJWT(requestPayload.get("token"))
         receipientAccntNumber = requestPayload.get("receipientAccntNumber")
         amount = requestPayload.get("amount")
-        response = bank.transferMoney(token["accountNumber"], receipientAccntNumber, amount)
+        response = bank.transferMoney(token["accountNumber"], receipientAccntNumber, amount, token["name"])
         return JSONResponse(
             content={"status": "successful", "response": response}, status_code=201
         )
