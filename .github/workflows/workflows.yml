@@ -59,7 +59,9 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
               cd /home/ubuntu/rencie && \
               aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com && \
-              docker compose down && \
+              docker compose down --remove-orphans || true && \
+              docker rm -f \$(docker ps -aq) || true && \
+              docker system prune -af || true && \
               docker compose pull && \
               docker compose up -d \
             "
