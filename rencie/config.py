@@ -4,7 +4,7 @@ from celery import Celery
 
 
 celery_app = Celery(
-    "worker", broker="redis://redis:6379/0", backend="redis://redis:6379/0", include=["renci.logic"]
+    "worker", broker="redis://redis:6379/0", backend="redis://redis:6379/0", include=["rencie.logic"]
 )
 
 celery_app.conf.update(
