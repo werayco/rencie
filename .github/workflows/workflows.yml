@@ -1,43 +1,40 @@
 name: practice-deploy
-
 on:
   push:
     branches: [main]
-
 permissions:
   contents: read
   id-token: write
 
+env:
+  IMAGE_TAG: ${{ github.sha }} # the commit SHA
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Pre-checkout
         id: checkout-practice
         uses: actions/checkout@v4
-
+        
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{secrets.AWS_ARN_ROLE}}
           aws-region: us-east-1
           audience: sts.amazonaws.com
-
+          
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
         
-      - name: build images and push to ECR
+      - name: Build images and push to ECR
         run: |
-        
-          docker build -t talktoai:latest -f agent.dockerfile .
-          docker tag talktoai:latest ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
-          docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:latest
-          
-        
-      - name: scp docker-compose config to bastion
+          docker build -t talktoai:${{ env.IMAGE_TAG }} -f agent.dockerfile .
+          docker tag talktoai:${{ env.IMAGE_TAG }} ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:${{ env.IMAGE_TAG }}
+          docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/agent:${{ env.IMAGE_TAG }}
+
+      - name: SCP docker-compose config to bastion
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -47,8 +44,8 @@ jobs:
           source: "docker-compose.yml"
           target: "~/"
           overwrite: true
-
-      - name: scp docker-compose config from bastion to renci server, then deploy using docker.
+          
+      - name: Deploy to renci server via bastion
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -59,7 +56,8 @@ jobs:
             scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.RENCI_HOST }}:/home/ubuntu/rencie/
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
               cd /home/ubuntu/rencie && \
+              aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com && \
               docker compose down && \
-              docker compose up -d --pull always \
+              docker compose pull && \
+              docker compose up -d \
             "
-            
