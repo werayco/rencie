@@ -9,7 +9,7 @@ from langgraph.checkpoint.mongodb import MongoDBSaver
 from pymongo import MongoClient
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.types import interrupt, Command
-from renci.logic import *
+from rencie.logic import *
 from agent.tools import *
 from agent.ragsystem import vectordbMemory
 

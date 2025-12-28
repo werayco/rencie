@@ -9,9 +9,10 @@ from pathlib import Path
 from fastapi.exceptions import HTTPException
 from agent.process import *
 from agent.ragsystem import *
-from renci.logic import *
-from renci.config import *
+from rencie.logic import *
+from rencie.config import *
 from prometheus_client import *
+
 
 app = FastAPI(title="Renci AI Agent Server", version="1.0.0")
 HTTP_REQUEST_LATENCY = Histogram(
@@ -190,8 +191,8 @@ async def login(req: loginPayload):
 async def checkBalance(req: checkBalancePayload):
     try:
         requestPayload = req.dict()
-        token: str = requestPayload.get("token")
-        response = bank.checkBalance(token)
+        token: str = bank.decodeJWT(requestPayload.get("token"))
+        response = bank.checkBalance(token["accountNumber"])
         return JSONResponse(
             content={"status": "successful", "response": response}, status_code=201
         )
@@ -205,13 +206,12 @@ async def checkBalance(req: checkBalancePayload):
 async def getTransactionStatement(req: checkBalancePayload):
     try:
         requestPayload = req.dict()
-        token: str = requestPayload.get("token")
-        response = bank.getBankStatement.delay(token)
+        token: str = bank.decodeJWT(requestPayload.get("token"))
+        response = bank.getBankStatement.delay(token["accountNumber"]. token["name"], token["email"])
         return JSONResponse(
             content={
                 "status": "Processing",
-                "response": "Your Bank Statement is on it's way! check your email",
-            },
+                "response": "Your Bank Statement is on it's way! check your email"},
             status_code=201,
         )
     except Exception as e:
@@ -224,10 +224,10 @@ async def getTransactionStatement(req: checkBalancePayload):
 async def transfer(req: transferPayload):
     try:
         requestPayload = req.dict()
-        token: str = requestPayload.get("token")
+        token: str = bank.decodeJWT(requestPayload.get("token"))
         receipientAccntNumber = requestPayload.get("receipientAccntNumber")
         amount = requestPayload.get("amount")
-        response = bank.transferMoney(token, receipientAccntNumber, amount)
+        response = bank.transferMoney(token["accountNumber"], receipientAccntNumber, amount)
         return JSONResponse(
             content={"status": "successful", "response": response}, status_code=201
         )

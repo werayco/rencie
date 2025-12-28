@@ -11,7 +11,7 @@ import uuid
 import secrets
 import jwt
 from typing import Literal
-from renci.config import *
+from rencie.config import *
 
 # load_dotenv(dotenv_path=r".\all.env")
 # load_dotenv()
