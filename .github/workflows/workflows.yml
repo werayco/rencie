@@ -60,6 +60,6 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
               cd /home/ubuntu/renci && \
               docker compose down && \
-              docker compose up -d \
+              docker compose up -d --pull always \
             "
             
