@@ -12,7 +12,6 @@ celery_app.conf.update(
         "logic.*": {"queue": "default"},
     }
 )
-
 # celery_app.autodiscover_tasks(["renci"])
 
 class responsemodel(BaseModel):
