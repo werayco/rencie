@@ -12,6 +12,12 @@ services:
       - chatai
     env_file:
       - ./all.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.portainer.rule=Host(`renci.devrayco.name.ng`)
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.tls.certresolver=myresolverv1
+      - traefik.http.services.portainer.loadbalancer.server.port=8000
 
   redis:
     image: redis:7
@@ -46,6 +52,12 @@ services:
       - renciapi
     networks:
       - chatai
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.portainer.rule=Host(`prometheus.devrayco.name.ng`)
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.tls.certresolver=myresolverv1
+      - traefik.http.services.portainer.loadbalancer.server.port=9090
 
   grafana:
     image: grafana/grafana:latest
@@ -61,9 +73,10 @@ services:
       - chatai
     labels:
       - traefik.enable=true
-      - traefik.http.routers.grafana.rule=Host(`grafana.devrayco.name.ng`)
-      - traefik.http.routers.grafana.entrypoints=websecure
-      - traefik.http.routers.grafana.tls.certresolver=thenonsensedev
+      - traefik.http.routers.portainer.rule=Host(`grafana-renci.devrayco.name.ng`)
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.tls.certresolver=myresolverv1
+      - traefik.http.services.portainer.loadbalancer.server.port=3000
 
   portainer:
     image: portainer/portainer-ce:latest
