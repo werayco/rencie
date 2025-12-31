@@ -26,6 +26,7 @@ services:
       - "6379:6379"
     networks:
       - chatai
+    restart: always
 
   worker:
     container_name: celery
@@ -40,6 +41,7 @@ services:
       - chatai
     env_file:
       - ./all.env
+    restart: always
 
   prometheus:
     image: prom/prometheus:latest
@@ -76,7 +78,7 @@ services:
       - traefik.http.routers.grafana.rule=Host(`grafana-renci.devrayco.name.ng`)
       - traefik.http.routers.grafana.entrypoints=websecure
       - traefik.http.routers.grafana.tls.certresolver=myresolverv1
-      - traefik.http.services.grfana.loadbalancer.server.port=3000
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
 
 networks:
   chatai:
