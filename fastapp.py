@@ -206,7 +206,7 @@ async def checkBalance(req: checkBalancePayload):
 async def getTransactionStatement(req: checkBalancePayload):
     try:
         requestPayload = req.dict()
-        token: str = bank.decodeJWT(requestPayload.get("token"))
+        token = bank.decodeJWT(requestPayload.get("token"))
         response = bank.getBankStatement.delay(token["accountNumber"]. token["name"], token["email"])
         return JSONResponse(
             content={
@@ -224,7 +224,7 @@ async def getTransactionStatement(req: checkBalancePayload):
 async def transfer(req: transferPayload):
     try:
         requestPayload = req.dict()
-        token: str = bank.decodeJWT(requestPayload.get("token"))
+        token = bank.decodeJWT(requestPayload.get("token"))
         receipientAccntNumber = requestPayload.get("receipientAccntNumber")
         amount = requestPayload.get("amount")
         response = bank.transferMoney(token["accountNumber"], receipientAccntNumber, amount, token["name"])

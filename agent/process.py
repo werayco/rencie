@@ -20,7 +20,6 @@ MONGO = os.getenv("MONGODB")
 client = MongoClient(MONGO)
 checkpointer = MongoDBSaver(client, db_name="my_database")
 
-
 class AgentState(TypedDict, total=False):
     messages: Annotated[Sequence[BaseMessage], add_messages]
     intent: str
