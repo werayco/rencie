@@ -207,7 +207,7 @@ async def getTransactionStatement(req: checkBalancePayload):
     try:
         requestPayload = req.dict()
         token = bank.decodeJWT(requestPayload.get("token"))
-        response = bank.getBankStatement.delay(token["accountNumber"] token["name"], token["email"])
+        response = bank.getBankStatement.delay(token["accountNumber"], token["name"], token["email"])
         return JSONResponse(
             content={
                 "status": "Processing",
