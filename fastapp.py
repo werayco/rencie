@@ -191,7 +191,7 @@ async def login(req: loginPayload):
 async def checkBalance(req: checkBalancePayload):
     try:
         requestPayload = req.dict()
-        token: str = bank.decodeJWT(requestPayload.get("token"))
+        token = bank.decodeJWT(requestPayload.get("token"))
         response = bank.checkBalance(token["accountNumber"])
         return JSONResponse(
             content={"status": "successful", "response": response}, status_code=201
