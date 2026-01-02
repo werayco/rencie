@@ -54,6 +54,7 @@ jobs:
           username: ${{ secrets.BASTION_USERNAME }}
           key: ${{ secrets.BASTION_SSH_KEY }}
           port: ${{ secrets.BASTION_PORT }}
+          command_timeout: 30m
           script: |
             scp -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ~/docker-compose.yml ubuntu@${{ secrets.RENCI_HOST }}:/home/ubuntu/rencie/
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/renci.pem ubuntu@${{ secrets.RENCI_HOST }} "\
