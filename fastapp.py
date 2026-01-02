@@ -21,6 +21,29 @@ HTTP_REQUEST_LATENCY = Histogram(
     buckets=[0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5]
 )
 
+HTTP_REQUEST_COUNT = Counter(
+    "http_requests_total",
+    "Total HTTP requests",
+    ["method", "endpoint", "status"]
+)
+
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    import time
+    start_time = time.time()
+    
+    response = await call_next(request)
+    
+    process_time = time.time() - start_time
+    endpoint = request.url.path
+    method = request.method
+    status = response.status_code
+    
+    HTTP_REQUEST_LATENCY.labels(method=method, endpoint=endpoint, status=status).observe(process_time)
+    HTTP_REQUEST_COUNT.labels(method=method, endpoint=endpoint, status=status).inc()
+    
+    return response
+
 @app.get("/metrics")
 def metrics():
     return Response(

@@ -3,17 +3,19 @@ from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from typing import Sequence, Annotated, TypedDict, Literal
 from langchain.tools import tool
+import numpy as np
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from langgraph.checkpoint.mongodb import MongoDBSaver
 from pymongo import MongoClient
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.types import interrupt, Command
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from rencie.logic import *
 from agent.tools import *
-from agent.ragsystem import vectordbMemory
+from agent.ragsystem import *
 
-# load_dotenv(dotenv_path=r".\all.env")
+load_dotenv(dotenv_path=r".\all.env")
 # load_dotenv()
 MONGO = os.getenv("MONGODB")
 
@@ -64,9 +66,9 @@ llm = ChatGroq(
 
 chat_llm = ChatGroq(
     model="llama-3.3-70b-versatile",
-    temperature=0).bind_tools([vectordbMemory])
+    temperature=0).bind_tools([vectordbMemory, search_finance_news])
 
-toolnode = ToolNode([vectordbMemory])
+toolnode = ToolNode([vectordbMemory, search_finance_news])
 
 class agents:
     @staticmethod
@@ -315,27 +317,19 @@ class agents:
 
 # from pprint import pprint
 compiled = agents.compileGraph()
-# config = {"configurable": {"thread_id": "9"}}
+# config = {"configurable": {"thread_id": "990"}}
 # response = compiled.invoke(
 #     {
 #         "messages": [
 #             HumanMessage(
-#                 content="what can rencie do?"
+#                 content="what is the latest news on finance at the moment??"
 #             )
 #         ],
 #         "senderAccountNumber": "0377052365",
-#         "name": "ReaD",
+#         "name": "Ray",
 #         "email": "werayco@gmail.com",
 #     },
 #     config=config,
 # )
 # print(response)
 
-# # response = compiled.invoke({"messages":[HumanMessage(content="what's the summary of our conversation?")],"senderAccountNumber":"0377052365", "name":"ReaD", "email": "werayco@gmail.com"}, config=config)
-# # print(response)
-
-# # x = compiled.invoke(
-# #     Command(resume="05977"),
-# #     config=config)
-
-# # print(x)
