@@ -15,7 +15,7 @@ from rencie.logic import *
 from agent.tools import *
 from agent.ragsystem import *
 
-load_dotenv(dotenv_path=r".\all.env")
+# load_dotenv(dotenv_path=r".\all.env")
 # load_dotenv()
 MONGO = os.getenv("MONGODB")
 
