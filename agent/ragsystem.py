@@ -1,7 +1,9 @@
+from langchain.tools import tool
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from docling.document_converter import DocumentConverter
 import warnings
 import os
 
@@ -21,20 +23,17 @@ def vectorstorecreator(filepath, db_path="faissDB"):
     faiss_vector_database = FAISS.from_documents(document_chunks, embeddings)
     faiss_vector_database.save_local(db_path)
 
-
-from langchain.tools import tool
-
+# vectorstorecreator(r"C:\Users\ADMIN\Downloads\Rencie Faq Pdf.pdf")
 
 @tool
 def vectordbMemory(query):
-    "this vector database tool should be used when the query of the user is about renci"
-    db_directory_path = vectordbpath
+    "this vector database tool should be used when the query of the user is about Renci FAQ"
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         model_kwargs={"device": "cpu"},
     )
     vector_store = FAISS.load_local(
-        db_directory_path, embeddings, allow_dangerous_deserialization=True
+        vectordbpath, embeddings, allow_dangerous_deserialization=True
     )
     retriever = vector_store.as_retriever()
     response = retriever.get_relevant_documents(query)

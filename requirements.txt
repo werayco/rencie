@@ -23,3 +23,4 @@ bcrypt
 langchain-groq
 python-multipart
 prometheus-client
+docling

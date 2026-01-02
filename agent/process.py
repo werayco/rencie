@@ -1,6 +1,6 @@
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, START, END
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from typing import Sequence, Annotated, TypedDict, Literal
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -19,6 +19,16 @@ MONGO = os.getenv("MONGODB")
 
 client = MongoClient(MONGO)
 checkpointer = MongoDBSaver(client, db_name="my_database")
+
+
+SYSTEM_PROMPT = SystemMessage(
+    content="""
+You are Rencie, an AI assistant for finance and banking.
+Answer questions clearly and concisely.
+Use the vectordbMemory tool only for queries about the Rencie FAQ.
+"""
+)
+
 
 class AgentState(TypedDict, total=False):
     messages: Annotated[Sequence[BaseMessage], add_messages]
@@ -54,8 +64,7 @@ llm = ChatGroq(
 
 chat_llm = ChatGroq(
     model="llama-3.3-70b-versatile",
-    temperature=0,
-).bind_tools([vectordbMemory])
+    temperature=0).bind_tools([vectordbMemory])
 
 toolnode = ToolNode([vectordbMemory])
 
@@ -63,7 +72,7 @@ class agents:
     @staticmethod
     def intentAgent(state: AgentState) -> AgentState:
         prompt = f"""
-        You are an intent classifier and structured data extractor for a banking assistant.
+        Your name is Rencie, you are an intent classifier and structured data extractor for a banking assistant.
 
         Your task:
         1. Identify the user's intent.
@@ -206,9 +215,13 @@ class agents:
         }
 
     @staticmethod
-    def chat(state: AgentState):
-        response = chat_llm.invoke(state["messages"])
-        return {"messages": [response]}
+    def chat(state: dict):
+        messages = state.get("messages", [])
+        full_messages = [SYSTEM_PROMPT] + messages
+        response = chat_llm.invoke(full_messages)
+        updated_messages = messages + [response]  # Just use response directly
+
+        return {"messages": updated_messages}
 
     @staticmethod
     def process(state: AgentState) -> AgentState:
@@ -303,20 +316,20 @@ class agents:
 # from pprint import pprint
 compiled = agents.compileGraph()
 # config = {"configurable": {"thread_id": "9"}}
-# # response = compiled.invoke(
-# #     {
-# #         "messages": [
-# #             HumanMessage(
-# #                 content="i want to make a transfer to my friend, her account number is 8561096124 and the amount is 9000"
-# #             )
-# #         ],
-# #         "senderAccountNumber": "0377052365",
-# #         "name": "ReaD",
-# #         "email": "werayco@gmail.com",
-# #     },
-# #     config=config,
-# # )
-# # pprint(response)
+# response = compiled.invoke(
+#     {
+#         "messages": [
+#             HumanMessage(
+#                 content="what can rencie do?"
+#             )
+#         ],
+#         "senderAccountNumber": "0377052365",
+#         "name": "ReaD",
+#         "email": "werayco@gmail.com",
+#     },
+#     config=config,
+# )
+# print(response)
 
 # # response = compiled.invoke({"messages":[HumanMessage(content="what's the summary of our conversation?")],"senderAccountNumber":"0377052365", "name":"ReaD", "email": "werayco@gmail.com"}, config=config)
 # # print(response)
