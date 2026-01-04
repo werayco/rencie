@@ -43,6 +43,8 @@ Rencie (derived from "Currency") is a banking application simulation built with 
 - Traefik (reverse proxy)
 - AWS VPC
 - GitHub Actions for CI/CD deployment
+- Cloudflare for DNS management
+- WhoGoHost as the domain registrar
 
 **Authentication and Communication**
 - JWT for authentication
