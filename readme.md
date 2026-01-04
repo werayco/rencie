@@ -6,8 +6,8 @@ Rencie (derived from "Currency") is a banking application simulation built with 
 
 | Component | Repository |
 |-----------|------------|
-| Main Application | https://github.com/werayco/rencie/tree/main |
-| Apache Airflow | https://github.com/werayco/ApacheAirflow-PublicSubnet |
+| [Main Application](https://rencie.devrayco.name.ng/) | https://github.com/werayco/rencie/tree/main |
+| [Apache Airflow ](https://airflow.devrayco.name.ng/)| https://github.com/werayco/ApacheAirflow-PublicSubnet |
 | MongoDB | https://github.com/werayco/MongoDB-Private-Subnet |
 
 ## Technology Stack
