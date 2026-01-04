@@ -1,7 +1,7 @@
 services:
   rencieapi:
     container_name: rencie
-    build:
+    # build:
       # context: .
       # dockerfile: agent.dockerfile
     image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
