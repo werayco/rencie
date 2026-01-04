@@ -78,7 +78,7 @@ def vectorstorecreator(filepath, db_path="faissDB"):
     faiss_vector_database = FAISS.from_documents(document_chunks, embeddings)
     faiss_vector_database.save_local(db_path)
 
-# vectorstorecreator(r"C:\Users\ADMIN\Downloads\Rencie Faq Pdf.pdf")
+# vectorstorecreator(".\rencieFAQForRAG.pdf") # uncomment this to create a vector store to serve as a knowledge base for Rencie
 
 @tool
 def vectordbMemory(query):

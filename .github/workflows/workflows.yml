@@ -47,7 +47,7 @@ jobs:
           target: "~/"
           overwrite: true
           
-      - name: Deploy to renci server via bastion
+      - name: Deploy to rencie server via bastion
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.BASTION_HOST }}

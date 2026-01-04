@@ -1,10 +1,10 @@
 services:
-  renciapi:
-    container_name: renci
-    # build:
-    #   context: .
-    #   dockerfile: agent.dockerfile
-    image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
+  rencieapi:
+    container_name: rencie
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
     ports:
       - "8000:8000"
     restart: always
@@ -14,10 +14,10 @@ services:
       - ./all.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.renci.rule=Host(`renci.devrayco.name.ng`)
-      - traefik.http.routers.renci.entrypoints=websecure
-      - traefik.http.routers.renci.tls.certresolver=myresolverv1
-      - traefik.http.services.renci.loadbalancer.server.port=8000
+      - traefik.http.routers.rencie.rule=Host(`rencie.devrayco.name.ng`)
+      - traefik.http.routers.rencie.entrypoints=websecure
+      - traefik.http.routers.rencie.tls.certresolver=myresolverv1
+      - traefik.http.services.rencie.loadbalancer.server.port=8000
 
   redis:
     image: redis:7
@@ -30,11 +30,11 @@ services:
 
   worker:
     container_name: celery
-    # build:
-    #   context: .
-    #   dockerfile: agent.dockerfile
-    image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
-    command: celery -A rencie.config.celery_app worker --loglevel=info
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
+    command: celery -A renciee.config.celery_app worker --loglevel=info
     depends_on:
       - redis
     networks:
@@ -51,7 +51,7 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - renciapi
+      - rencieapi
     networks:
       - chatai
     labels:
@@ -75,7 +75,7 @@ services:
       - chatai
     labels:
       - traefik.enable=true
-      - traefik.http.routers.grafana.rule=Host(`grafana-renci.devrayco.name.ng`)
+      - traefik.http.routers.grafana.rule=Host(`grafana-rencie.devrayco.name.ng`)
       - traefik.http.routers.grafana.entrypoints=websecure
       - traefik.http.routers.grafana.tls.certresolver=myresolverv1
       - traefik.http.services.grafana.loadbalancer.server.port=3000
@@ -85,4 +85,4 @@ networks:
     external: true
 
 volumes:
-  renci_data:
+  rencie_data:

@@ -18,6 +18,7 @@ app = FastAPI(title="Renci AI Agent Server", version="1.0.0")
 HTTP_REQUEST_LATENCY = Histogram(
     "http_request_duration_seconds",
     "HTTP request latency",
+    ["method", "endpoint", "status"],
     buckets=[0.1, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 5]
 )
 
