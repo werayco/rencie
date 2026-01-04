@@ -2,9 +2,9 @@ services:
   rencieapi:
     container_name: rencie
     build:
-      context: .
-      dockerfile: agent.dockerfile
-    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
+      # context: .
+      # dockerfile: agent.dockerfile
+    image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
     ports:
       - "8000:8000"
     restart: always
@@ -30,10 +30,10 @@ services:
 
   worker:
     container_name: celery
-    build:
-      context: .
-      dockerfile: agent.dockerfile
-    # image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
+    # build:
+    #   context: .
+    #   dockerfile: agent.dockerfile
+    image: 518033441890.dkr.ecr.us-east-1.amazonaws.com/agent:latest
     command: celery -A renciee.config.celery_app worker --loglevel=info
     depends_on:
       - redis
