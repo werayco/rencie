@@ -134,6 +134,9 @@ The agent maintains state using MongoDBSaver checkpointer, tracking:
 - OTP status and attempt count
 - User information (name, email)
 
+# Graph Architecture
+![alt text](images/graph.png)
+
 ### Data Pipeline
 
 Apache Airflow orchestrates a scheduled workflow that:
@@ -226,7 +229,11 @@ nano all.env
 
 Edit the `all.env` file with your credentials.
 
-4. Start the services
+4. Update the Docker Compose configuration by uncommenting the **build** section and commenting out the **image** field for both the **rencieapi** and **worker** services.
+This ensures the services are built locally from the Dockerfile instead of pulling a prebuilt image from the registry.
+
+    ![alt text](images\image-13.png)
+5. Start the services
 
 ```bash
 docker-compose up -d
